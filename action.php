@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-<?php
+    <?php
 session_start();
 $ip_add = getenv("Remote_Add_Cart");
 include "db/db.php";
@@ -592,8 +594,9 @@ if (isset($_POST["Common"])) {
 			}
 			?>
 
-				<a style="float:right;" href="Customer_cart.php" class="btn btn-primary">Edit&nbsp;&nbsp;<span class="glyphicon glyphicon-edit"></span></a>
-			<?php
+    <a style="float:right;" href="Customer_cart.php" class="btn btn-primary">Edit&nbsp;&nbsp;<span
+            class="glyphicon glyphicon-edit"></span></a>
+    <?php
 			exit();
 		}
 	}
@@ -763,133 +766,155 @@ if (isset($_POST["updateCartItem"])) {
 		exit();
 	}
 }
-function getAccessToken()
-{
-    $consumerKey = "tB55AyE6GkWNy07ZN7QkWM8w18tsUTw8"; //Fill with your app Consumer Key
-    $consumerSecret = "rGaOgERTxizG6GBH"; //Fill with your app Consumer Secret
-    //ACCESS TOKEN URL
-    $access_token_url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
-    $headers = ['Content-Type:application/json; charset=utf8'];
-    $curl = curl_init($access_token_url);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($curl, CURLOPT_HEADER, FALSE);
-    curl_setopt($curl, CURLOPT_USERPWD, $consumerKey . ':' . $consumerSecret);
-    $result = curl_exec($curl);
-    $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+// function getAccessToken()
+// {
+//     $consumerKey = "tB55AyE6GkWNy07ZN7QkWM8w18tsUTw8"; //Fill with your app Consumer Key
+//     $consumerSecret = "rGaOgERTxizG6GBH"; //Fill with your app Consumer Secret
+//     //ACCESS TOKEN URL
+//     $access_token_url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
+//     $headers = ['Content-Type:application/json; charset=utf8'];
+//     $curl = curl_init($access_token_url);
+//     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+//     curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+//     curl_setopt($curl, CURLOPT_HEADER, FALSE);
+//     curl_setopt($curl, CURLOPT_USERPWD, $consumerKey . ':' . $consumerSecret);
+//     $result = curl_exec($curl);
+//     $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-    $result = json_decode($result);
-    // ASSIGN ACCESS TOKEN TO A VARIABLE
-    echo $access_token = $result->access_token;
-    curl_close($curl);
+//     $result = json_decode($result);
+//     // ASSIGN ACCESS TOKEN TO A VARIABLE
+//     echo $access_token = $result->access_token;
+//     curl_close($curl);
 
-    return $access_token;
-}
-function sendStkPush($phoneNumber)
-{
-	$access_token = "y0CQ15GWEDCOz6j7gT0evh2q4iQM";
-	date_default_timezone_set('Africa/Nairobi');
-	$processrequestUrl = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
-	$callbackurl = 'https://luckysita.vercel.app/callback';
-	$passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
-	$BusinessShortCode = '174379';
-	$Timestamp = date('YmdHis');
-	// ENCRYPT  DATA TO GET PASSWORD
-	$Password = base64_encode($BusinessShortCode . $passkey . $Timestamp);
-	$phone = $phoneNumber; //phone number to receive the stk push
-	$money = '1';
-	$PartyA = $phone;
-	$PartyB = '254708374149';
-	$AccountReference = 'Auto Gear';
-	$TransactionDesc = 'stkpush test';
-	$Amount = $money;
-	$stkpushheader = ['Content-Type:application/json', 'Authorization:Bearer ' . $access_token];
+//     return $access_token;
+// }
+// function sendStkPush($phoneNumber)
+// {
+// 	$access_token = "y0CQ15GWEDCOz6j7gT0evh2q4iQM";
+// 	date_default_timezone_set('Africa/Nairobi');
+// 	$processrequestUrl = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+// 	$callbackurl = 'https://luckysita.vercel.app/callback';
+// 	$passkey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
+// 	$BusinessShortCode = '174379';
+// 	$Timestamp = date('YmdHis');
+// 	// ENCRYPT  DATA TO GET PASSWORD
+// 	$Password = base64_encode($BusinessShortCode . $passkey . $Timestamp);
+// 	$phone = $phoneNumber; //phone number to receive the stk push
+// 	$money = '1';
+// 	$PartyA = $phone;
+// 	$PartyB = '254708374149';
+// 	$AccountReference = 'Auto Gear';
+// 	$TransactionDesc = 'stkpush test';
+// 	$Amount = $money;
+// 	$stkpushheader = ['Content-Type:application/json', 'Authorization:Bearer ' . $access_token];
 	
-	//INITIATE CURL
-	$curl = curl_init();
-	curl_setopt($curl, CURLOPT_URL, $processrequestUrl);
-	curl_setopt($curl, CURLOPT_HTTPHEADER, $stkpushheader); //setting custom header
-	$curl_post_data = array(
-		//Fill in the request parameters with valid values
-		'BusinessShortCode' => $BusinessShortCode,
-		'Password' => $Password,
-		'Timestamp' => $Timestamp,
-		'TransactionType' => 'CustomerPayBillOnline',
-		'Amount' => $Amount,
-		'PartyA' => $PartyA,
-		'PartyB' => $BusinessShortCode,
-		'PhoneNumber' => $PartyA,
-		'CallBackURL' => $callbackurl,
-		'AccountReference' => $AccountReference,
-		'TransactionDesc' => $TransactionDesc
-	);
+// 	//INITIATE CURL
+// 	$curl = curl_init();
+// 	curl_setopt($curl, CURLOPT_URL, $processrequestUrl);
+// 	curl_setopt($curl, CURLOPT_HTTPHEADER, $stkpushheader); //setting custom header
+// 	$curl_post_data = array(
+// 		//Fill in the request parameters with valid values
+// 		'BusinessShortCode' => $BusinessShortCode,
+// 		'Password' => $Password,
+// 		'Timestamp' => $Timestamp,
+// 		'TransactionType' => 'CustomerPayBillOnline',
+// 		'Amount' => $Amount,
+// 		'PartyA' => $PartyA,
+// 		'PartyB' => $BusinessShortCode,
+// 		'PhoneNumber' => $PartyA,
+// 		'CallBackURL' => $callbackurl,
+// 		'AccountReference' => $AccountReference,
+// 		'TransactionDesc' => $TransactionDesc
+// 	);
 	
-	$data_string = json_encode($curl_post_data);
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($curl, CURLOPT_POST, true);
-	curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
-	echo $curl_response = curl_exec($curl);
-    return 0;
-}
+// 	$data_string = json_encode($curl_post_data);
+// 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+// 	curl_setopt($curl, CURLOPT_POST, true);
+// 	curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
+// 	echo $curl_response = curl_exec($curl);
+//     return 0;
+// }
 
-function console_log($output, $with_script_tags = true) {
-    $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . 
-');';
-    if ($with_script_tags) {
-        $js_code = '<script>' . $js_code . '</script>';
-    }
-    echo $js_code;
-}
+// function console_log($output, $with_script_tags = true) {
+//     $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . 
+// ');';
+//     if ($with_script_tags) {
+//         $js_code = '<script>' . $js_code . '</script>';
+//     }
+//     echo $js_code;
+// }
 
-if(isset($_POST['submit'])) {
-	$phoneNumber = $_POST['number'];
-	console_log($phoneNumber);
-	sendStkPush($phoneNumber);
-}
+// if(isset($_POST['submit'])) {
+// 	$phoneNumber = $_POST['number'];
+// 	console_log($phoneNumber);
+// 	sendStkPush($phoneNumber);
+// }
 ?>
-<div id="myModal" class="modal">
+    <div id="myModal" class="modal">
 
-<div class="modal-content">
-  <span class="close">&times;</span>
-  <form action="Customer_cart.php" method="post">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <!-- <form action="Customer_cart.php" method="post">
   	<p>Please enter your the phone number being used for payment.</p>
 	<label for="number">Phone Number:</label>
 	<input class="number" name="number" type="number" placeholder="0712345678 or 254712345678"/>
 	<div class="submit"><button id="submit" name="submit" type="submit" class="btn btn-primary" >Submit</button></div>
-  </form>
-  <br>
-  <p>Please check your phone for a prompt after clicking submit to complete payment!!!</p>
-</div>
+  </form> -->
+            <div id="form">
+                <form id="main" action="stkpush.php" method="POST">
+                    <p>Please enter your the phone number being used for payment.</p>
+                    <label for="number">Phone Number:</label>
+                    <input class="number" name="number" type="number" placeholder="0712345678 or 254712345678" />
+                    <div class="submit"><button id="submit" name="submit" type="submit"
+                            class="btn btn-primary">Submit</button></div>
+                </form>
+            </div>
+            <br>
+            <p>Please check your phone for a prompt after clicking submit to complete payment!!!</p>
+        </div>
 
-</div>
-<script type="text/javascript">
-	var btn = document.getElementById("myBtn");
-	var modal = document.getElementById("myModal");
-	var span = document.getElementsByClassName("close")[0];
-	span.onclick = function(){
-		modal.style.display = "none";
-	}
-	btn.onclick = function() {
-  		modal.style.display = "block";
-	}
-	window.onclick = function(event) {
-		if (event.target == modal) {
-			modal.style.display = "none";
-		}
-	}
-	// $('#submit').on('click', function(e){
-   	// 	e.preventDefault();
+    </div>
+    <script type="text/javascript">
+    var btn = document.getElementById("myBtn");
+    var modal = document.getElementById("myModal");
+    var span = document.getElementsByClassName("close")[0];
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    $(document).ready(function() {
+        $("form").on("submit", function(e) {
+            $.ajax({
+                type: "POST",
+                url: "stkpush.php",
+                data: $("form").serialize(),
+                success: function() {
+                    // Display message back to the user here 
+                }
+            });
+            e.preventDefault();
+        });
+    });
+    // $('#submit').on('click', function(e){
+    // 	e.preventDefault();
 
-	// 	$.ajax({
-	// 	type: 'post',
-	// 	url: 'stkpush.php',
-		
-	// 	success: function() {
-	// 		alert("Success!!!");
-	// 	}
-	// 	});
-	// });
-</script>
+    // 	$.ajax({
+    // 	type: 'post',
+    // 	url: 'stkpush.php',
+
+    // 	success: function() {
+    // 		alert("Success!!!");
+    // 	}
+    // 	});
+    // });
+    </script>
 </body>
-</html>
 
+</html>
