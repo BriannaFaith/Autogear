@@ -862,9 +862,10 @@ if (isset($_POST["updateCartItem"])) {
   </form> -->
             <div id="form">
                 <form id="main" action="stkpush.php" method="POST">
-                    <p>Please enter your the phone number being used for payment.</p>
+                    <p>Please enter the phone number being used for payment.</p>
                     <label for="number">Phone Number:</label>
-                    <input class="number" name="number" type="number" placeholder="0712345678 or 254712345678" />
+                    <input id="input" onkeyup="enableSubmit()" class="number" name="number" type="number"
+                        placeholder="0712345678 or 254712345678" />
                     <div class="submit"><button id="submit" name="submit" type="submit"
                             class="btn btn-primary">Submit</button></div>
                 </form>
@@ -875,6 +876,10 @@ if (isset($_POST["updateCartItem"])) {
 
     </div>
     <script type="text/javascript">
+    window.onload = function() {
+        var btn = document.querySelector('#submit');
+        btn.disabled = true;
+    };
     var btn = document.getElementById("myBtn");
     var modal = document.getElementById("myModal");
     var span = document.getElementsByClassName("close")[0];
@@ -887,6 +892,17 @@ if (isset($_POST["updateCartItem"])) {
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
+        }
+    }
+
+    function enableSubmit() {
+        var value = document.getElementById('input').value;
+        var btn = document.querySelector('#submit');
+
+        if (value.length < 10) {
+            btn.disabled = true;
+        } else {
+            btn.disabled = false;
         }
     }
     $(document).ready(function() {
